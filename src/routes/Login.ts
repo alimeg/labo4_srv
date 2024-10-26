@@ -1,17 +1,15 @@
-import { Request, Response, Router } from 'express';
+import { Router, Request, Response } from 'express';
 import PokemonUser from '../models/PokemonUser';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const router = Router();
 
-// Define the route with explicit function typing
 router.post(
-  "/login",
+  '/',
   async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
-    // Basic input validation
     if (!email || !password) {
       res.status(400).json({ message: "Email et mot de passe sont requis" });
       return;
@@ -30,8 +28,7 @@ router.post(
         return;
       }
 
-      // Generate JWT token
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || '', { expiresIn: '1h' });
+      const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY || '', { expiresIn: '1h' });
       res.status(200).json({ token, user });
     } catch (error) {
       console.error("Error during user login:", error);

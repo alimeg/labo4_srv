@@ -4,14 +4,17 @@ import favicon from 'serve-favicon';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import registerRoutes from './src/routes/Register'; // Adjust this path
-import loginRoutes from './src/routes/Login'; // Adjust this path
+import registerRoutes from './src/routes/Register'; // Register routes
+import loginRoutes from './src/routes/Login'; // Login routes
+import dotenv from 'dotenv';
+
+dotenv.config(); 
 
 const app: Application = express();
 const port = 3011;
 
 // Initialize the database
-initialisationDb(); // Assuming this handles connection internally
+initialisationDb();
 
 // Middleware
 app.use(cors());
@@ -24,10 +27,12 @@ app.get('/', (req, res) => {
   res.send('Bienvenue sur notre application Node.js!');
 });
 
-// Use the routes
-app.use(registerRoutes); // Use the register router
-app.use(loginRoutes); // Use the login router
-
+// Use the routes with a prefix
+app.use('/api/register', registerRoutes); // Register router
+app.use('/api/login', loginRoutes); // Login router
+app.post('/test-register', (req, res) => {
+  res.send('Test registration endpoint is working!');
+});
 // Error handling for 404
 app.use((req, res) => {
   res.status(404).json({ message: 'Impossible de trouver la ressource demandée' });
